@@ -12,7 +12,8 @@ namespace Enviroment.Birdoid
         [SerializeField] private int boidAmount = 5;
         [SerializeField] private float cohesion = 100;
         [SerializeField] private float alignment = 8;
-        [SerializeField] private float range = 100;
+        [SerializeField] private float separationRange = 100;
+        [SerializeField] private float alignmentRange = 50;
         [SerializeField] private float boidSpeed = 1;
         [SerializeField] private float randomSpawnRange = 5;
         
@@ -78,7 +79,7 @@ namespace Enviroment.Birdoid
             foreach (Boid boid in _boids)
             {
                 if (boid != targetBoid
-                    && (boid.position - targetBoid.position).magnitude < range)
+                    && (boid.position - targetBoid.position).magnitude < separationRange)
                 {
                     c -= boid.position - targetBoid.position;
                 }
@@ -93,7 +94,8 @@ namespace Enviroment.Birdoid
             
             foreach (Boid boid in _boids)
             {
-                if (boid != targetBoid)
+                if (boid != targetBoid
+                    && (boid.position - targetBoid.position).magnitude < alignmentRange)
                 {
                     pv += boid.velocity;
                 }

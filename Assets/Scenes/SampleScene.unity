@@ -370,12 +370,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enviroment.Birdoid.BoidSystem
   boidVisual: {fileID: 4871783715501992176, guid: 98629555adea7e640ab75b83ae9ffae2, type: 3}
-  boidAmount: 20
-  cohesion: 100
-  alignment: 10
-  range: 10
-  boidSpeed: 1
-  randomSpawnRange: 25
+  boidAmount: 100
+  cohesion: 1000
+  alignment: 5
+  separationRange: 10
+  alignmentRange: 10
+  boidSpeed: 3
+  randomSpawnRange: 500
 --- !u!4 &1894177200
 Transform:
   m_ObjectHideFlags: 0
