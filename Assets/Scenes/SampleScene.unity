@@ -225,7 +225,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 100
+  orthographic size: 300
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -371,11 +371,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Enviroment.Birdoid.BoidSystem
   boidVisual: {fileID: 4871783715501992176, guid: 98629555adea7e640ab75b83ae9ffae2, type: 3}
   boidAmount: 100
-  cohesion: 1000
+  cohesion: 100000
   alignment: 5
   separationRange: 10
-  alignmentRange: 10
-  boidSpeed: 3
+  alignmentRange: 20
+  boidSpeed: 50
   randomSpawnRange: 500
 --- !u!4 &1894177200
 Transform:

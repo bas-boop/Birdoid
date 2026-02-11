@@ -50,9 +50,8 @@ namespace Enviroment.Birdoid
                 Vector2 v3 = Alignment(boid);
 
                 boid.velocity += v1 + v2 + v3;
-                boid.velocity = boid.velocity.normalized * boidSpeed;
+                boid.velocity = boid.velocity.normalized * (Time.deltaTime * boidSpeed);
                 boid.position += boid.velocity;
-                Debug.Log(boid.velocity + " " + boid.position);
             }
         }
 
