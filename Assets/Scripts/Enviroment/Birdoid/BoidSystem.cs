@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Framework.Extensions;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 namespace Enviroment.Birdoid
 {
@@ -8,13 +10,20 @@ namespace Enviroment.Birdoid
     {
         [SerializeField] private GameObject boidVisual;
         [SerializeField] private int boidAmount = 5;
+        [SerializeField] private float cohesion = 100;
+        [SerializeField] private float alignment = 8;
+        [SerializeField] private float range = 100;
+        [SerializeField] private float boidSpeed = 1;
+        [SerializeField] private float randomSpawnRange = 5;
+        
         private List<Boid> _boids = new ();
 
         private void Start()
         {
             for (int i = 0; i < boidAmount; i++)
             {
-                _boids.Add(new (Vector2.one * i, Vector2.one * i, Instantiate(boidVisual)));
+                Vector2 a = new(Random.Range(-randomSpawnRange, randomSpawnRange), Random.Range(-randomSpawnRange, randomSpawnRange));
+                _boids.Add(new (a, a, Instantiate(boidVisual)));
             }
         }
 
@@ -35,17 +44,18 @@ namespace Enviroment.Birdoid
         {
             foreach (Boid boid in _boids)
             {
-                Vector2 v1 = Rule1(boid);
-                Vector2 v2 = Rule2(boid);
-                Vector2 v3 = Rule3(boid);
+                Vector2 v1 = Cohesion(boid);
+                Vector2 v2 = Separation(boid);
+                Vector2 v3 = Alignment(boid);
 
                 boid.velocity += v1 + v2 + v3;
+                boid.velocity = boid.velocity.normalized * boidSpeed;
                 boid.position += boid.velocity;
                 Debug.Log(boid.velocity + " " + boid.position);
             }
         }
 
-        private Vector2 Rule1(Boid targetBoid)
+        private Vector2 Cohesion(Boid targetBoid)
         {
             Vector2 p = Vector2.zero;
 
@@ -58,17 +68,17 @@ namespace Enviroment.Birdoid
             }
 
             p /= _boids.Count - 1;
-            return (p - targetBoid.position) / 100;
+            return (p - targetBoid.position) / cohesion;
         }
 
-        private Vector2 Rule2(Boid targetBoid)
+        private Vector2 Separation(Boid targetBoid)
         {
             Vector2 c = Vector2.zero;
 
             foreach (Boid boid in _boids)
             {
                 if (boid != targetBoid
-                    && (boid.position - targetBoid.position).magnitude < 100)
+                    && (boid.position - targetBoid.position).magnitude < range)
                 {
                     c -= boid.position - targetBoid.position;
                 }
@@ -77,7 +87,7 @@ namespace Enviroment.Birdoid
             return c;
         }
 
-        private Vector2 Rule3(Boid targetBoid)
+        private Vector2 Alignment(Boid targetBoid)
         {
             Vector2 pv = Vector2.zero;
             
@@ -90,8 +100,7 @@ namespace Enviroment.Birdoid
             }
             
             pv /= _boids.Count - 1;
-
-            return (pv - targetBoid.velocity) / 8;
+            return (pv - targetBoid.velocity) / alignment;
         }
     }
 }
