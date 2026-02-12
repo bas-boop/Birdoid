@@ -14,5 +14,14 @@ namespace Enviroment.Birdoid
             position = pos;
             boidGameObject = boid;
         }
+
+        public void UpdateBoid()
+        {
+            boidGameObject.transform.position = position;
+            
+            Vector3 diff = (position + velocity - position).normalized;
+            float z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+            boidGameObject.transform.rotation = Quaternion.Euler(0f, 0f, z - 90);
+        }
     }
 }

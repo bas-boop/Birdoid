@@ -371,7 +371,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enviroment.Birdoid.BoidSystem
   boidVisual: {fileID: 4871783715501992176, guid: 98629555adea7e640ab75b83ae9ffae2, type: 3}
-  boidAmount: 500
+  boidAmount: 100
   cohesion: 100000
   alignment: 5
   separationRange: 5

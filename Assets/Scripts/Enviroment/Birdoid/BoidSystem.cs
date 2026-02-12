@@ -37,16 +37,22 @@ namespace Enviroment.Birdoid
             
             UpdateBoid();
 
-            foreach (Boid boid in _boids)
+            int l = _boids.Count;
+
+            for (int i = 0; i < l; i++)
             {
-                boid.boidGameObject.transform.position = boid.position;
+                Boid boid = _boids[i];
+                boid.UpdateBoid();
             }
         }
 
         private void UpdateBoid()
         {
-            foreach (Boid boid in _boids)
+            int l = _boids.Count;
+
+            for (int i = 0; i < l; i++)
             {
+                Boid boid = _boids[i];
                 Vector2 v1 = Cohesion(boid);
                 Vector2 v2 = Separation(boid);
                 Vector2 v3 = Alignment(boid);
