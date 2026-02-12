@@ -16,6 +16,8 @@ namespace Enviroment.Birdoid
         [SerializeField] private float alignmentRange = 50;
         [SerializeField] private float boidSpeed = 1;
         [SerializeField] private float randomSpawnRange = 5;
+        [SerializeField] private Vector2 bounds = Vector2.one * 100;
+        [SerializeField] private float turnAwayFromBounds = 10;
         
         private List<Boid> _boids = new ();
 
@@ -50,6 +52,7 @@ namespace Enviroment.Birdoid
                 Vector2 v3 = Alignment(boid);
 
                 boid.velocity += v1 + v2 + v3;
+                Bounds(boid);
                 boid.velocity = boid.velocity.normalized * (Time.deltaTime * boidSpeed);
                 boid.position += boid.velocity;
             }
@@ -58,9 +61,11 @@ namespace Enviroment.Birdoid
         private Vector2 Cohesion(Boid targetBoid)
         {
             Vector2 p = Vector2.zero;
+            int l = _boids.Count;
 
-            foreach (Boid boid in _boids)
+            for (int i = 0; i < l; i++)
             {
+                Boid boid = _boids[i];
                 if (boid != targetBoid)
                 {
                     p += boid.position;
@@ -74,9 +79,11 @@ namespace Enviroment.Birdoid
         private Vector2 Separation(Boid targetBoid)
         {
             Vector2 c = Vector2.zero;
+            int l = _boids.Count;
 
-            foreach (Boid boid in _boids)
+            for (int i = 0; i < l; i++)
             {
+                Boid boid = _boids[i];
                 if (boid != targetBoid
                     && (boid.position - targetBoid.position).magnitude < separationRange)
                 {
@@ -90,18 +97,37 @@ namespace Enviroment.Birdoid
         private Vector2 Alignment(Boid targetBoid)
         {
             Vector2 pv = Vector2.zero;
-            
-            foreach (Boid boid in _boids)
+            int l = _boids.Count;
+
+            for (int i = 0; i < l; i++)
             {
+                Boid boid = _boids[i];
                 if (boid != targetBoid
                     && (boid.position - targetBoid.position).magnitude < alignmentRange)
                 {
                     pv += boid.velocity;
                 }
             }
-            
+
             pv /= _boids.Count - 1;
             return (pv - targetBoid.velocity) / alignment;
+        }
+
+        private void Bounds(Boid targetBoid)
+        {
+            Vector2 targetBoidPosition = targetBoid.position;
+            
+            if (targetBoidPosition.x < bounds.x)
+                targetBoid.velocity.x += turnAwayFromBounds;
+            
+            if (targetBoidPosition.x > -bounds.x)
+                targetBoid.velocity.x -= turnAwayFromBounds;
+            
+            if (targetBoidPosition.y < bounds.y)
+                targetBoid.velocity.y += turnAwayFromBounds;
+            
+            if (targetBoidPosition.y > -bounds.y)
+                targetBoid.velocity.y -= turnAwayFromBounds;
         }
     }
 }
