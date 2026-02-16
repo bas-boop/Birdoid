@@ -225,7 +225,7 @@ Camera:
   far clip plane: 1000
   field of view: 34
   orthographic: 1
-  orthographic size: 300
+  orthographic size: 500
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -365,13 +365,13 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1894177198}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 1c8769651b39462e800184ed0e598f53, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Enviroment.Birdoid.BoidSystem
   boidVisual: {fileID: 4871783715501992176, guid: 98629555adea7e640ab75b83ae9ffae2, type: 3}
-  boidAmount: 100
+  boidAmount: 500
   cohesion: 100000
   alignment: 5
   separationRange: 5
@@ -402,7 +402,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1894177198}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: cab1966611454aa0bcc003ee066340a0, type: 3}
   m_Name: 
@@ -412,11 +412,12 @@ MonoBehaviour:
   cohesion: 100000
   alignment: 5
   separationRange: 5
-  alignmentRange: 1
+  alignmentRange: 127.5
   boidSpeed: 175
   randomSpawnRange: 500
-  bounds: {x: 350, y: 350}
+  bounds: {x: 700, y: 450}
   turnAwayFromBounds: 0.5
+  innerloopBatchCount: 64
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Unity.Collections;
 using Unity.Jobs;
 using UnityEngine;
@@ -19,70 +18,79 @@ namespace Enviroment.Birdoid
         [SerializeField] private float randomSpawnRange = 5;
         [SerializeField] private Vector2 bounds = Vector2.one * 100;
         [SerializeField] private float turnAwayFromBounds = 10;
-        
-        private List<GameObject> _boids = new ();
-        
-        struct BirdoidWithJob : IJob
-        {
-            public NativeArray<Vector3> positions;
-            public NativeArray<Vector3> velocities;
-            public float deltaTime;
-            
-            public void Execute()
-            {
-                for (int i = 0; i < positions.Length; i++)
-                {
-                    positions[i] += velocities[i] * deltaTime;
-                }
-            }
-        }
 
-        private void Awake()
+        [Header("jobs")]
+        [SerializeField] private int innerloopBatchCount = 32;
+        
+        private List<GameObject> _boids = new();
+
+        private NativeArray<Vector2> _positions;
+        private NativeArray<Vector2> _velocities;
+
+        private void Start()
         {
+            _positions = new (boidAmount, Allocator.Persistent);
+            _velocities = new (boidAmount, Allocator.Persistent);
+            
             for (int i = 0; i < boidAmount; i++)
             {
+                Vector2 randomPos = new (Random.Range(-randomSpawnRange, randomSpawnRange), Random.Range(-randomSpawnRange, randomSpawnRange));
+                
+                _positions[i] = randomPos;
+                _velocities[i] = randomPos.normalized;
                 _boids.Add(Instantiate(boidVisual, transform));
             }
         }
 
         private void Update()
         {
-            NativeArray<Vector3> positions = new (boidAmount, Allocator.TempJob);
-            NativeArray<Vector3> velocities = new (boidAmount, Allocator.TempJob);
-
-            for (int i = 0; i < positions.Length; i++)
+            if (_boids.Count <= 0)
+                return;
+            
+            NativeArray<Vector2> newVelocities = new (boidAmount, Allocator.TempJob);
+            
+            BoidJob job = new()
             {
-                positions[i] = new(Random.Range(-randomSpawnRange, randomSpawnRange), Random.Range(-randomSpawnRange, randomSpawnRange));;
-                velocities[i] = positions[i];
-            }
-
-            BirdoidWithJob job = new ()
-            {
-                positions = positions,
-                velocities = velocities,
-                deltaTime = Time.deltaTime
+                positions = _positions,
+                velocities = _velocities,
+                newVelocities = newVelocities,
+                cohesion = cohesion,
+                alignment = alignment,
+                separationRange = separationRange,
+                alignmentRange = alignmentRange,
+                boidSpeed = boidSpeed,
+                bounds = bounds,
+                turnAwayFromBounds = turnAwayFromBounds,
+                deltaTime = Time.deltaTime,
+                boidCount = boidAmount
             };
-
-            JobHandle handle = job.Schedule();
+            
+            JobHandle handle = job.Schedule(boidAmount, innerloopBatchCount);
             handle.Complete();
             
-            // do stuff here
-            //Debug.Log(positions[0]);
             for (int i = 0; i < boidAmount; i++)
             {
-                if (positions.Length < 0)
-                    break;
+                _velocities[i] = newVelocities[i];
+                _positions[i] += _velocities[i];
                 
                 GameObject boidGameObject = _boids[i];
-                boidGameObject.transform.position = positions[i];
-            
-                Vector3 diff = (positions[i] + velocities[i] - positions[i]).normalized;
-                float z = Mathf.Atan2(diff.y, diff.x) * Mathf.Rad2Deg;
+                boidGameObject.transform.position = _positions[i];
+                
+                Vector2 vel = _velocities[i];
+                float z = Mathf.Atan2(vel.y, vel.x) * Mathf.Rad2Deg;
                 boidGameObject.transform.rotation = Quaternion.Euler(0f, 0f, z - 90);
             }
             
-            positions.Dispose();
-            velocities.Dispose();
+            newVelocities.Dispose();
+        }
+
+        private void OnDestroy()
+        {
+            if (_positions.IsCreated)
+                _positions.Dispose();
+            
+            if (_velocities.IsCreated)
+                _velocities.Dispose();
         }
     }
 }
