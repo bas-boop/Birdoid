@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Framework.Extensions;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -26,7 +24,7 @@ namespace Enviroment.Birdoid
             for (int i = 0; i < boidAmount; i++)
             {
                 Vector2 a = new(Random.Range(-randomSpawnRange, randomSpawnRange), Random.Range(-randomSpawnRange, randomSpawnRange));
-                _boids.Add(new (a, a, Instantiate(boidVisual)));
+                _boids.Add(new (a, a, Instantiate(boidVisual, transform)));
             }
         }
 
